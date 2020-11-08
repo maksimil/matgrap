@@ -11,7 +11,16 @@ pub struct Line<'a> {
     finish: &'a Point,
 }
 
-pub struct Canvas {
+pub struct Canvas<'a> {
     points: HashMap<String, Point>,
-    lines: Vec<Line>;
+    lines: Vec<Line<'a>>,
+}
+
+impl<'a> Canvas<'a> {
+    pub fn new<'b>() -> Canvas<'b> {
+        Canvas {
+            points: HashMap::new(),
+            lines: Vec::new(),
+        }
+    }
 }
