@@ -1,26 +1,72 @@
-use std::collections::HashMap;
-
+#[derive(Debug)]
 pub struct Point {
-    label: String,
-    x: f64,
-    y: f64,
+    pub label: String,
+    pub x: f64,
+    pub y: f64,
 }
 
-pub struct Line<'a> {
-    start: &'a Point,
-    finish: &'a Point,
+#[derive(Debug)]
+pub struct Line {
+    start: String,
+    finish: String,
 }
 
-pub struct Canvas<'a> {
-    points: HashMap<String, Point>,
-    lines: Vec<Line<'a>>,
+#[derive(Debug)]
+pub struct Canvas {
+    points: Vec<Point>,
+    lines: Vec<Line>,
 }
 
-impl<'a> Canvas<'a> {
-    pub fn new<'b>() -> Canvas<'b> {
+impl Canvas {
+    pub fn new() -> Canvas {
         Canvas {
-            points: HashMap::new(),
+            points: Vec::new(),
             lines: Vec::new(),
+        }
+    }
+
+    pub fn add_point(&mut self, p: Point) {
+        self.points.push(p);
+
+        let mut i = self.points.len() - 1;
+
+        while 0 < i && self.points[i].label < self.points[i - 1].label {
+            self.points.swap(i, i - 1);
+            i -= 1;
+        }
+    }
+
+    pub fn get_point_index(&self, label: &str) -> Option<usize> {
+        let mut l = 0;
+        let mut r = self.points.len();
+
+        while r - l > 1 {
+            let m = (r + l) / 2;
+            let mlabel = self.points[m].label.as_str();
+
+            if label < mlabel {
+                r = m
+            } else {
+                l = m;
+            }
+        }
+
+        if self.points[l].label.as_str() == label {
+            Some(l)
+        } else {
+            None
+        }
+    }
+
+    pub fn get_point(&self, label: &str) -> Option<&Point> {
+        self.get_point_index(label).map(|i| &self.points[i])
+    }
+
+    pub fn get_point_mut(&mut self, label: &str) -> Option<&mut Point> {
+        let i = self.get_point_index(label);
+        match i {
+            Some(i) => Some(&mut self.points[i]),
+            None => None,
         }
     }
 }
