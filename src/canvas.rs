@@ -7,8 +7,8 @@ pub struct Point {
 
 #[derive(Debug)]
 pub struct Line {
-    start: String,
-    finish: String,
+    pub start: String,
+    pub finish: String,
 }
 
 #[derive(Debug)]
@@ -67,6 +67,17 @@ impl Canvas {
         match i {
             Some(i) => Some(&mut self.points[i]),
             None => None,
+        }
+    }
+
+    pub fn add_line(&mut self, line: Line) -> bool {
+        if self.get_point_index(&line.start).is_some()
+            && self.get_point_index(&line.finish).is_some()
+        {
+            self.lines.push(line);
+            true
+        } else {
+            false
         }
     }
 }
